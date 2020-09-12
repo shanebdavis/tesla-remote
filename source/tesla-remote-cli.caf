@@ -12,13 +12,25 @@ require("@art-suite/cli").start
     """
       A remote for your Tesla, how cool is that?
 
+      Based on this NPM package: https://www.npmjs.com/package/teslajs
+      Based on the unofficial Tesla API documention: https://tesla-api.timdorr.com
+
+      NOTE: usernames and passwords are never stored, they are used to fetch a one-time API token which is discared when the command completes.
+
   commands: merge
     vehicles: {}
       options
-      description: "" Get information about all of your vehicles.
+      description: "" Get information about all your Tesla vehicles.
       run: (options) ->
         auth options
         .then vehiclesAsync
+
+    products: {}
+      options
+      description: "" Get information about all your Tesla products.
+      run: (options) ->
+        auth options
+        .then productsAsync
 
     openFrunk: {}
       options
@@ -31,7 +43,7 @@ require("@art-suite/cli").start
       run: authWithIdInvoke (creds) -> openTrunk creds, TRUNK
 
     object methodName in compactFlatten []
-        :chargeState :vehicleData :guiSettings :driveState :vehicleConfig :soc :nearbyChargers :mobileEnabled :climateState
+        :chargeState :vehicleData :guiSettings :driveState :vehicleConfig :nearbyChargers :mobileEnabled :climateState
       {}
         options
         description: "" Get #{dashCase methodName} (read-only action}
@@ -40,8 +52,14 @@ require("@art-suite/cli").start
     object methodName in compactFlatten []
         :wakeUp
         :flashLights
-        :lock
-        :unlock
+        :doorLock
+        :doorUnlock
+        :stopCharge
+        :startCharge
+        :openChargePort
+        :closeChargePort
+        :climateStart
+        :climateStop
       {}
         options
         description: "" #{dashCase methodName} the car (write action)
