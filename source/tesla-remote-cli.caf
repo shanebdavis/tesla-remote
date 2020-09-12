@@ -42,6 +42,16 @@ require("@art-suite/cli").start
       description: "" Open the trunk. If powered, will also close the trunk.
       run: authWithIdInvoke (creds) -> openTrunk creds, TRUNK
 
+    ventWindows: {}
+      options
+      description: "" Vent the windows.
+      run: authWithIdInvoke (creds) -> windowControl creds, :vent
+
+    closeWindows: {}
+      options
+      description: "" Close the windows.
+      run: authWithIdInvoke (creds) -> windowControl creds, :close
+
     object methodName in compactFlatten []
         :chargeState :vehicleData :guiSettings :driveState :vehicleConfig :nearbyChargers :mobileEnabled :climateState
       {}
