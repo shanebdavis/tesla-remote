@@ -7,6 +7,8 @@ Remote control your Tesla from the command-line. Written in CaffeineScript on No
 
 # Install
 
+Be sure to install [NodeJS](https://nodejs.org/en/download/) if you haven't already.
+
 ```
 git clone git@github.com:shanebdavis/tesla-remote.git
 cd tesla-remote
