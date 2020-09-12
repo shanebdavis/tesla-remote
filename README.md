@@ -23,7 +23,7 @@ npm install
 
 Your username and password are not stored. They can be passed on the command-line for each command, or they can be set in environment variables. The latter is the most secure since they will "go away" when you close your terminal.
 
-How use with environment vars:
+How to use with environment vars:
 
 ```bash
 export tesla_username=foo@bar.com
@@ -31,7 +31,7 @@ export tesla_password=abc123
 ./tesla-remote vehicles
 ```
 
-How use with commandline args:
+How to use with commandline args:
 
 ```bash
 ./tesla-remote vehicles --username foo@bar.com --password abc123
