@@ -1,0 +1,48 @@
+import &ArtStandardLib, &TeslaLib, &teslajs
+
+authWithIdInvoke = (method) ->
+  (options) -> authAndGetVehicleId(options).then method
+
+options =
+  username:  "" your tesla username - used just long enough to fetch an API key and then discarded; alternatively, you can set your password as an environment variable: tesla_username
+  password:  "" your tesla password - used just long enough to fetch an API key and then discarded; alternatively, you can set your password as an environment variable: tesla_password
+
+require("@art-suite/cli").start
+  description:
+    """
+      A remote for your Tesla, how cool is that?
+
+  commands: merge
+    vehicles: {}
+      options
+      description: "" Get information about all of your vehicles.
+      run: (options) ->
+        auth options
+        .then vehiclesAsync
+
+    openFrunk: {}
+      options
+      description: "" Open the frunk.
+      run: authWithIdInvoke (creds) -> openTrunk creds, FRUNK
+
+    openTrunk: {}
+      options
+      description: "" Open the trunk. If powered, will also close the trunk.
+      run: authWithIdInvoke (creds) -> openTrunk creds, TRUNK
+
+    object methodName in compactFlatten []
+        :chargeState :vehicleData :guiSettings :driveState :vehicleConfig :soc :nearbyChargers :mobileEnabled :climateState
+      {}
+        options
+        description: "" Get #{dashCase methodName} (read-only action}
+        run: authWithIdInvoke &teslajs[methodName + :Async]
+
+    object methodName in compactFlatten []
+        :wakeUp
+        :flashLights
+        :lock
+        :unlock
+      {}
+        options
+        description: "" #{dashCase methodName} the car (write action)
+        run: authWithIdInvoke &teslajs[methodName + :Async]

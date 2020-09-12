@@ -1,0 +1,22 @@
+import &ArtStandardLib
+
+{}
+  auth = ({username = process.env.tesla_username, password = process.env.tesla_password}) ->
+    &teslajs.loginAsync username, password
+    .then (result) ->
+      if result.error
+        throw result.error
+
+      unless result?.authToken
+        throw formattedInspect
+          message: "" log in failed to return token. username: #{username}
+          result
+
+      authToken: result.authToken
+
+  authAndGetVehicleId = (options) ->
+    auth options
+    .then (creds) ->
+      &teslajs.vehicleAsync creds
+      .then ({id_s}) ->
+        merge creds, vehicleID: id_s
