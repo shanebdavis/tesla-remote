@@ -23,8 +23,10 @@ Your username and password are not stored. They can be passed on the command-lin
 How to use with environment vars:
 
 ```bash
-export tesla_username=foo@bar.com
-export tesla_password=abc123
+# TIP: For the best security, put a space before the "export" commands.
+# That way they won't be saved to your shell's command history.
+ export tesla_username=foo@bar.com
+ export tesla_password=abc123
 npx tesla-remote vehicles
 ```
 
