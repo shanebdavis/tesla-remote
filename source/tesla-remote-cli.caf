@@ -38,6 +38,7 @@ require("@art-suite/cli").start
       description: "" Authenticate and get an auth token.
       run: (options) ->
         auth options
+        .then ({authToken}) -> authToken
 
     vehicles: {}
       options: objectWithout options, :productId

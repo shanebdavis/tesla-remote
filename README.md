@@ -8,13 +8,37 @@ Use **tesla-remote** to get info and remote control your Tesla. It is written in
 - Based on this NPM package: https://www.npmjs.com/package/teslajs
 - Based on the unofficial Tesla API documentation: https://tesla-api.timdorr.com
 
-# Run
+# Quikc Start
 
 Be sure to install [NodeJS](https://nodejs.org/en/download/) if you haven't already, then run the following for the latest CLI help:
 
 ```bash
-npx tesla-remote
+# Get a list of your vehicles.
+# NOTE: Your username and password are not stored anywhere.
+# NOTE: The space before ' npx ...' ensures the command isn't stored
+#       in your command-history.
+ npx tesla-remote vehicles --username test@test.com --password abc123
 ```
+
+# Run Multiple Commands
+
+Above is the simplest way to run one command. Typically you'll want to run multiple commands, and you won't want to pass your username and password every time.
+```bash
+# Authenticate and store the auth-token in the shell's environment:
+# NOTE: Your username and password are not stored.
+# NOTE: An auth_token is stored in your shell's environment.
+# NOTE: Your tesla_auth_token will be discard when you close your shell.
+ export tesla_auth_token=`npx tesla-remote auth --username test@test.com --password abc123`
+
+# Now run as many commands as you want.
+# Bonus: It's safe to use your shell's command history.
+npx tesla-remote vehicles
+npx tesla-remote vehicle-data
+
+# IMPORTANT: Don't forget to close your shell when you are done!
+```
+
+
 
 # Environment Variables
 
