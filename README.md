@@ -42,6 +42,8 @@ npx tesla-remote vehicle-data
 
 # Environment Variables
 
+If you are issuing multiple commands, the best solution is to set your credentials and product-id as environment variables.
+
 ```bash
 # NOTE:
 #   Start any command that has your password or token with a "space" so
@@ -56,7 +58,7 @@ export tesla_username=test@test.com
 # alternatively, you can fetch the token once with the "auth" command:
 # Get your authToken:
 # >  tesla-remote auth --username test@test.com --password abc123
-# authToken: qts-abc123abc123abc123abc123abc123abc123abc123abc123abc123abc123abc123
+# qts-abc123abc123abc123abc123abc123abc123abc123abc123abc123abc123abc123
  export tesla_auth_token=qts-abc123abc123abc123abc123abc123abc123abc123abc123abc123abc123abc123
 
 # select your vehicle
