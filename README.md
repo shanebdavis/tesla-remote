@@ -3,7 +3,7 @@
 > WARNING: EXPERIMENTAL - This is all unofficial. Use at your own risk. Remember, you are remote controlling a large, expensive object. Remember there are objects nearby. Make sure you think carefully before taking any "write" actions.
 <br><br>That said, currently there are no commands to *move* the car. The biggest risk is opening or closing the trunk when there is something to bump into, or... accidentally leaving your windows open or car unlocked.
 
-**tesla-remote** is a remote control your Tesla. It is written in CaffeineScript (JavaScript in 1/3 the code) and runs on NodeJS.
+Use **tesla-remote** to get info and remote control your Tesla. It is written in CaffeineScript (JavaScript in 1/3 the code) and runs on NodeJS.
 
 - Based on this NPM package: https://www.npmjs.com/package/teslajs
 - Based on the unofficial Tesla API documentation: https://tesla-api.timdorr.com
@@ -16,6 +16,34 @@ Be sure to install [NodeJS](https://nodejs.org/en/download/) if you haven't alre
 npx tesla-remote
 ```
 
+# Environment Variables
+
+```bash
+# NOTE:
+#   Start any command that has your password or token with a "space" so
+#   it doesn't get saved in your command history.
+
+# the username/email you use to log in with
+export tesla_username=test@test.com
+
+# the password for your account
+ export tesla_password=abc123
+
+# alternatively, you can fetch the token once with the "auth" command:
+# Get your authToken:
+# >  tesla-remote auth --username test@test.com --password abc123
+# authToken: qts-abc123abc123abc123abc123abc123abc123abc123abc123abc123abc123abc123
+ export tesla_auth_token=qts-abc123abc123abc123abc123abc123abc123abc123abc123abc123abc123abc123
+
+# select your vehicle
+# Get your product id:
+# >  tesla-remote vehicles
+# []
+#   id:           123456789012 <-- copy the 'id' field, not the 'vehicle_id' field
+#   vehicle_id:   999999999999
+export tesla_product_id=123456789012
+```
+
 # About Your Tesla Credentials
 
 Your username and password are not stored. They can be passed on the command-line for each command, or they can be set in environment variables. The latter is the most secure since they will "go away" when you close your terminal.
@@ -23,17 +51,23 @@ Your username and password are not stored. They can be passed on the command-lin
 How to use with environment vars:
 
 ```bash
-# TIP: For the best security, put a space before the "export" commands.
-# That way they won't be saved to your shell's command history.
- export tesla_username=foo@bar.com
+# (add space before commands with sensitive information to signal
+# to your shell not to save them to your command history)
+export tesla_username=foo@bar.com
  export tesla_password=abc123
+npx tesla-remote vehicles
+
+# or
+ export tesla_auth_token=qts-abc123abc123abc123abc123abc123abc123abc123abc123abc123abc123abc123
 npx tesla-remote vehicles
 ```
 
 How to use with command-line arguments:
 
 ```bash
-npx tesla-remote vehicles --username foo@bar.com --password abc123
+# (add space before commands with sensitive information to signal
+# to your shell not to save them to your command history)
+ npx tesla-remote vehicles --username foo@bar.com --password abc123
 ```
 
 # Clone and Play!

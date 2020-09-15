@@ -1,11 +1,19 @@
 import &ArtStandardLib, &TeslaLib, &teslajs
 
 authWithIdInvoke = (method) ->
-  (options) -> authAndGetVehicleId(options).then method
+  (options) ->
+    Promise.then ->
+      authAndGetVehicleId(options).then method
+    .catch (error) ->
+      if error is String and /408/.test error
+        "" The car is asleep. Wake it up with the wake-up command.
+      else error
 
 options =
-  username:  "" your tesla username - used just long enough to fetch an API key and then discarded; alternatively, you can set your password as an environment variable: tesla_username
-  password:  "" your tesla password - used just long enough to fetch an API key and then discarded; alternatively, you can set your password as an environment variable: tesla_password
+  username:   "" Tesla account username - used just long enough to fetch an API key and then discarded (alt env variable: tesla_username)
+  password:   "" Tesla account password - used just long enough to fetch an API key and then discarded (alt env variable: tesla_password)
+  productId:  "" Have more than one Tesla? Select it by setting the product-id. (alt env variable: tesla_prodict_id)
+  authToken:  "" Specify an auth token instead of a username and password. (alt env variable: tesla_auth_token)
 
 require("@art-suite/cli").start
   description:
@@ -17,9 +25,22 @@ require("@art-suite/cli").start
 
       NOTE: usernames and passwords are never stored, they are used to fetch a one-time API token which is discared when the command completes.
 
+      Set optional environment variables so you don't have to set them with every command.
+
+        tesla_username   # Tesla account username
+        tesla_password   # Tesla account password
+        tesla_auth_token # Specify an auth token instead of username and password.
+        tesla_product_id # the "id" field of the product you want to control
+
   commands: merge
+    auth: {}
+      options: objectWithout options, :authToken, :productId
+      description: "" Authenticate and get an auth token.
+      run: (options) ->
+        auth options
+
     vehicles: {}
-      options
+      options: objectWithout options, :productId
       description: "" Get information about all your Tesla vehicles.
       run: (options) ->
         auth options
@@ -34,30 +55,42 @@ require("@art-suite/cli").start
 
     openFrunk: {}
       options
-      description: "" Open the frunk.
+      description: "" Open the frunk. (write action)
       run: authWithIdInvoke (creds) -> openTrunk creds, FRUNK
 
     openTrunk: {}
       options
-      description: "" Open the trunk. If powered, will also close the trunk.
+      description: "" Open the trunk. If powered, will also close the trunk. (write action)
       run: authWithIdInvoke (creds) -> openTrunk creds, TRUNK
 
     ventWindows: {}
       options
-      description: "" Vent the windows.
+      description: "" Vent the windows. (write action)
       run: authWithIdInvoke (creds) -> windowControl creds, :vent
 
     closeWindows: {}
       options
-      description: "" Close the windows.
+      description: "" Close the windows. (write action)
       run: authWithIdInvoke (creds) -> windowControl creds, :close
 
     object methodName in compactFlatten []
-        :chargeState :vehicleData :guiSettings :driveState :vehicleConfig :nearbyChargers :mobileEnabled :climateState
+        :chargeState
+        :driveState
+        :climateState
+        :guiSettings
+        :vehicleConfig
+        :nearbyChargers
+        :mobileEnabled
       {}
         options
         description: "" Get #{dashCase methodName} (read-only action}
         run: authWithIdInvoke &teslajs[methodName + :Async]
+
+    vehicleData:
+      {}
+        options
+        description: "" Get all information about your vehicle in one call. (read-only action}
+        run: authWithIdInvoke &teslajs.vehicleDataAsync
 
     object methodName in compactFlatten []
         :wakeUp
@@ -72,5 +105,5 @@ require("@art-suite/cli").start
         :climateStop
       {}
         options
-        description: "" #{dashCase methodName} the car (write action)
+        description: "" #{capitalize dashCase methodName} (write action)
         run: authWithIdInvoke &teslajs[methodName + :Async]

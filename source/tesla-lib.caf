@@ -1,8 +1,12 @@
 import &ArtStandardLib
 
 {}
-  auth = ({username = process.env.tesla_username, password = process.env.tesla_password}) ->
-    &teslajs.loginAsync username, password
+  auth = ({authToken = process.env.tesla_auth_token, username = process.env.tesla_username, password = process.env.tesla_password}) ->
+    Promise.then ->
+      if present authToken
+        {} authToken
+      else &teslajs.loginAsync username, password
+
     .then (result) ->
       if result.error
         throw result.error
@@ -17,6 +21,8 @@ import &ArtStandardLib
   authAndGetVehicleId = (options) ->
     auth options
     .then (creds) ->
-      &teslajs.vehicleAsync creds
-      .then ({id_s}) ->
-        merge creds, vehicleID: id_s
+      Promise.then ->
+        options.product_id
+        ? process.env.tesla_product_id
+        ? &teslajs.vehiclesAsync(creds).then ([{id_s}]) -> id_s
+      .then (vehicleID) -> merge creds, {} vehicleID
