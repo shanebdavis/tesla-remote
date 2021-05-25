@@ -10,10 +10,11 @@ authWithIdInvoke = (method) ->
       else error
 
 options =
-  username:   "" Tesla account username - used just long enough to fetch an API key and then discarded (alt env variable: tesla_username)
-  password:   "" Tesla account password - used just long enough to fetch an API key and then discarded (alt env variable: tesla_password)
-  productId:  "" Have more than one Tesla? Select it by setting the product-id. (alt env variable: tesla_prodict_id)
-  authToken:  "" Specify an auth token instead of a username and password. (alt env variable: tesla_auth_token)
+  username:     "" Tesla account username - used just long enough to fetch an API key and then discarded (alt env variable: tesla_username)
+  password:     "" Tesla account password - used just long enough to fetch an API key and then discarded (alt env variable: tesla_password)
+  mfaPassCode:  "" Tesla MFA code (multy-factor-authorization code) - if applicable
+  productId:    "" Have more than one Tesla? Select it by setting the product-id. (alt env variable: tesla_prodict_id)
+  authToken:    "" Specify an auth token instead of a username and password. (alt env variable: tesla_auth_token)
 
 require("@art-suite/cli").start
   description:
@@ -38,7 +39,6 @@ require("@art-suite/cli").start
       description: "" Authenticate and get an auth token.
       run: (options) ->
         auth options
-        .then ({authToken}) -> authToken
 
     vehicles: {}
       options: objectWithout options, :productId

@@ -1,11 +1,20 @@
 import &ArtStandardLib
 
+getTeslaEnvVars = ->
+  object v, k in process.env when /^tesla/i.test k with-key lowerCamelCase k.replace /^tesla[-_]?/, ''
+
 {}
-  auth = ({authToken = process.env.tesla_auth_token, username = process.env.tesla_username, password = process.env.tesla_password}) ->
+  auth = (credentials) ->
+    credentials = merge getTeslaEnvVars(), credentials
+    credentials extract username, password, mfaPassCode, authToken
     Promise.then ->
-      if present authToken
+      if present(username) and present password
+        log "" Tesla auth: using username and password #{"with mfaPassCode" if present mfaPassCode}
+        &teslajs.loginAsync credentials
+      else if present authToken
+        log "" Tesla auth: using authToken
         {} authToken
-      else &teslajs.loginAsync username, password
+      else error: "" Required: authToken or username and password
 
     .then (result) ->
       if result.error
@@ -16,7 +25,7 @@ import &ArtStandardLib
           message: "" log in failed to return token. username: #{username}
           result
 
-      authToken: result.authToken
+      {authToken, refreshToken} = result
 
   authAndGetVehicleId = (options) ->
     auth options
